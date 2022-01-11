@@ -2,6 +2,7 @@ const express = require("express")
 const app = express()
 const session = require("express-session")
 const bodyParser = require("body-parser")
+const { Op } = require("sequelize");
 //databases
 const path = require('path')
 const PORT = process.env.PORT || 3000
