@@ -49,9 +49,9 @@ const PersonQuest = connection.define("personquest",{
 
 })
 
-PersonQuest.sync({force:true}).then(()=>{
-    console.log("Tabela PersonQuest criada");
-}) 
+// PersonQuest.sync({force:true}).then(()=>{
+//     console.log("Tabela PersonQuest criada");
+// }) 
 module.exports = PersonQuest
 
 
