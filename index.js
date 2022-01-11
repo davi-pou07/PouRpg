@@ -26,7 +26,7 @@ app.use(bodyParser.json({ limit: '50mb' }))
 
 app.get("/", (req, res) => {
     var erro = 0
-   res.render("index",{erro:erro})
+   res.render("personQuest",{erro:erro})
 })
 app.post("/personagem",async (req,res)=>{
     var {nome,apelido,classe,descClass,cla,descCla,habEsp,descHab,fraqueza,descFraq,observacao} = req.body
@@ -50,15 +50,15 @@ app.post("/personagem",async (req,res)=>{
            }).then(criado =>{
                res.render("sucesso")
            }).catch(erro =>{
-               res.render("index",{erro:erro})
+               res.render("personQuest",{erro:erro})
            })
        } else {
            var erro= "Ja existe um personagem com esse (nome,apelido,habilidade especial)"
-            res.render("index",{erro:erro})
+            res.render("personQuest",{erro:erro})
        }
     } else {
         var erro= "Campo obrigatorio está vazio"
-        res.render("index",{erro:erro})
+        res.render("personQuest",{erro:erro})
     }
 })
 
