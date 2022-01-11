@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
    res.render("index",{erro:erro})
 })
 app.post("/personagem",async (req,res)=>{
-    var {nome,apelido,classe,descClasse,cla,descCla,habEsp,descHab,fraqueza,descFraq,observacao} = req.body
+    var {nome,apelido,classe,descClass,cla,descCla,habEsp,descHab,fraqueza,descFraq,observacao} = req.body
     console.log(req.body)
     if (nome != undefined && nome != '' && apelido != undefined && apelido != '' &&  classe != undefined && classe != '' &&  cla != undefined && cla != '' &&  habEsp != undefined && habEsp != '' && fraqueza != undefined && fraqueza != '') {
        var  igual = await PersonQuest.findOne({where:{[Op.or]:[{nome:nome},{apelido:apelido},{poder:habEsp}]}})
@@ -39,7 +39,7 @@ app.post("/personagem",async (req,res)=>{
             nome:nome,
             apelido:apelido,
             classe:classe,
-            descricaoClasse:descClasse,
+            descricaoClasse:descClass,
             cla:cla,
             descricaoCla:descCla,
             poder:habEsp,
@@ -60,6 +60,12 @@ app.post("/personagem",async (req,res)=>{
         var erro= "Campo obrigatorio está vazio"
         res.render("index",{erro:erro})
     }
+})
+
+app.get("/cadastros",(req,res)=>{
+    PersonQuest.findAll().then(personagens =>{
+        res.json(personagens)
+    })
 })
 
 app.listen(PORT, async() => {
