@@ -31,9 +31,8 @@ class Personagem {
     sofrerAtaque(dano){
         var defesa = this.getDefesa()
         this.vida = this.vida - (dano-defesa)
-        console.log(`Sofrendo ataque de ${dano}`)
-        console.log(`Defendeu ${defesa}`)
-        console.log(this.vida)
+        console.log(`Defendeu ${defesa} de ${dano}`)
+        console.log(`Vida atual:${this.vida}`)
     }
     getDefesa(){
         var defesa = this.classe.defesaPadrao + this.cla.defesaAdicional
@@ -42,6 +41,14 @@ class Personagem {
     getDano(){
         var dano = this.classe.danoPadrao + this.cla.danoAdicional
         return dano
+    }
+
+    getStatus(){
+        if (this.vida <= 0) {
+            return false
+        } else {
+            return true
+        }
     }
 }
 
@@ -55,11 +62,15 @@ var cla2 = {id:2,nome:"shy",danoAdicional:9 ,defesaAdicional:3}
 var Pou = new Personagem(1,'pou',classe,cla,habEsp)
 var Pou2 = new Personagem(2,'poa',classe2,cla2,habEs2)
 
-Pou.ataqueBasico(Pou2)
-Pou2.ataqueBasico(Pou)
 
-Pou.habEsp(Pou2)
-Pou2.habEsp(Pou)
 
-Pou.contraAtaqueRapido(Pou2)
-Pou2.contraAtaqueRapido(Pou)
+while (Pou.getStatus() || Pou2.getStatus()) {
+    Pou.ataqueBasico(Pou2)
+    Pou2.ataqueBasico(Pou)
+
+    Pou.habEsp(Pou2)
+    Pou2.habEsp(Pou)
+
+    Pou.contraAtaqueRapido(Pou2)
+    Pou2.contraAtaqueRapido(Pou)
+}
