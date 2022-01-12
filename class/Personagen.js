@@ -1,3 +1,32 @@
+class acao{
+    ataqueBasico(inimigo,dano){
+        console.log("Inferindo ataque de ",dano)
+        inimigo.acao.sofrerAtaque(inimigo,dano)
+    }
+
+    habEsp(inimigo,habilidade){
+        console.log(`Liberando ataque ${habilidade.nome}`)
+        console.log(`Inferindo ${habilidade.dano} de dano`)
+        inimigo.acao.sofrerAtaque(inimigo,habilidade.dano)
+    }
+
+    contraAtaqueRapido(inimigo,dano){
+        var percContraAtaque = 50
+        var dano = (dano * percContraAtaque)/100
+        console.log(`contra atacando com ${dano} de dano`)
+        inimigo.acao.sofrerAtaque(inimigo,dano)
+    }
+
+    sofrerAtaque(inimigo,dano){
+        var defesa = inimigo.getDefesa()
+        inimigo.vida = inimigo.vida - (dano-defesa)
+        console.log(`Defendeu ${defesa} de ${dano}`)
+        console.log(`Vida atual:${inimigo.vida}`)
+    }
+}
+
+
+
 class Personagem {
     constructor(id,nome,classe,cla,habEsp){
         this.id = id
@@ -5,35 +34,10 @@ class Personagem {
         this.classe = classe
         this.cla = cla
         this.vida = classe.vidaInicial
-        this.abilidade = habEsp
+        this.habilidade = habEsp
+        this.acao = new acao()
     }
     
-    ataqueBasico(id){
-        var dano = this.getDano() 
-        console.log("Inferindo ataque de ",dano)
-        id.sofrerAtaque(dano)
-    }
-
-    habEsp(id){
-        var dano = this.abilidade.dano
-        console.log(`Liberando ataque ${this.abilidade.nome}`)
-        console.log(`Inferindo ${this.abilidade.dano} de dano`)
-        id.sofrerAtaque(dano)
-    }
-
-    contraAtaqueRapido(id){
-        var percContraAtaque = 50
-        var dano = (this.getDano() * percContraAtaque)/100
-        console.log(`contra atacando com ${dano} de dano`)
-        id.sofrerAtaque(dano)
-    }
-
-    sofrerAtaque(dano){
-        var defesa = this.getDefesa()
-        this.vida = this.vida - (dano-defesa)
-        console.log(`Defendeu ${defesa} de ${dano}`)
-        console.log(`Vida atual:${this.vida}`)
-    }
     getDefesa(){
         var defesa = this.classe.defesaPadrao + this.cla.defesaAdicional
         return defesa
@@ -52,25 +56,55 @@ class Personagem {
     }
 }
 
-var habEsp = {id:1,nome:"Ritmo de furia",dano:25,tempo:3}
-var habEs2 = {id:1,nome:"Magia Rustica",dano:30,tempo:2}
+class HabilidadeEspecial{
+    constructor(id,nome,dano,tempo){
+        this.id = id
+        this.nome = nome
+        this.dano = dano
+        this.tempo = tempo
+    }
+}
 
-var classe = {id:1,nome:"lutador",danoPadrao:17,defesaPadrao:5,vidaInicial:125}
-var classe2 = {id:2,nome:"Mago",danoPadrao:14,defesaPadrao:2,vidaInicial:100}
-var cla = {id:1,nome:"Bor",danoAdicional:5,defesaAdicional:2}
-var cla2 = {id:2,nome:"shy",danoAdicional:9 ,defesaAdicional:3}
+class Classe{
+    constructor(id,nome,danoPadrao,defesaPadrao,vidaInicial){
+        this.id = id
+        this.nome = nome
+        this.danoPadrao = danoPadrao
+        this.defesaPadrao = defesaPadrao
+        this.vidaInicial = vidaInicial
+    }
+}
+
+class Cla{
+    constructor(id,nome,danoAdicional,defesaAdicional){
+        this.id = id
+        this.nome = nome
+        this.danoAdicional = danoAdicional
+        this.defesaAdicional = defesaAdicional
+    }
+}
+
+var habEsp = new HabilidadeEspecial(1,"Ritmo de furia",25,3) 
+var habEs2 = new HabilidadeEspecial(2,"Magia Rustica",30,2)
+
+var classe = new Classe(1,"lutador",17,5,125)
+var classe2 =  new Classe(2,"Mago",14,2,100)
+
+var cla = new Cla(1,"Bor",5,2)
+var cla2 = new Cla(2,"shy",9,3)
+
 var Pou = new Personagem(1,'pou',classe,cla,habEsp)
 var Pou2 = new Personagem(2,'poa',classe2,cla2,habEs2)
 
 
 
 while (Pou.getStatus() || Pou2.getStatus()) {
-    Pou.ataqueBasico(Pou2)
-    Pou2.ataqueBasico(Pou)
+    Pou.acao.ataqueBasico(Pou2,Pou.getDano())
+    Pou2.acao.ataqueBasico(Pou,Pou2.getDano())
 
-    Pou.habEsp(Pou2)
-    Pou2.habEsp(Pou)
+    Pou.acao.habEsp(Pou2,Pou.habilidade)
+    Pou2.acao.habEsp(Pou,Pou2.habilidade)
 
-    Pou.contraAtaqueRapido(Pou2)
-    Pou2.contraAtaqueRapido(Pou)
+    Pou.acao.contraAtaqueRapido(Pou2,Pou.getDano())
+    Pou2.acao.contraAtaqueRapido(Pou,Pou.getDano())
 }
