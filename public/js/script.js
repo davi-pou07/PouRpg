@@ -8,6 +8,8 @@ window.onload = function(){
 	spriteSheet.src = "../public/img/killer.png";
 	var scene = new Image();
 	scene.src = "../public/img/land.jpg"
+   
+//https://stackoverflow.com/questions/9880279/how-do-i-add-a-simple-onclick-event-handler-to-a-canvas-element
 
 	var zezim = new Sprite(spriteSheet);
 	window.addEventListener("keydown",keydownHandler,false);
@@ -72,22 +74,36 @@ window.onload = function(){
 	function update(){
 		zezim.move();
 	}
-
+	var circle = new Path2D()
+	ctx.fillStyle = 'red';
+	cnv.addEventListener('click', function(event) {
+		// Check whether point is inside circle
+		if (ctx.isPointInPath(circle, event.offsetX, event.offsetY)) {
+			alert("Passou em cima do zezim")
+		}
+		
+	  });
+	
 	function draw(){
 		ctx.clearRect(0,0,cnv.width,cnv.height);
 		ctx.drawImage(	scene,	//Imagem de origem
-			//Captura da imagem
+		 	//Captura da imagem
 			0,	//Origem da captura no eixo X
 			0,	//Origem da captura no eixo Y
-			scene.width,	//Largura da imagem que será capturada
-			scene.height,//Altura da imagem que será capturada
-			//Exibição da imagem
-			0,	//Posição no eixo X onde a imagem será exibida 
-			0,	//Posição no eixo Y onde a imagem será exibida 
-			cnv.width,	//Largura da imagem a ser exibida 
-			cnv.height	//Altura da imagem a ser exibida 
+		 	scene.width,	//Largura da imagem que será capturada
+		 	scene.height,//Altura da imagem que será capturada
+		 	//Exibição da imagem
+		 	0,	//Posição no eixo X onde a imagem será exibida 
+		 	0,	//Posição no eixo Y onde a imagem será exibida 
+		 	cnv.width,	//Largura da imagem a ser exibida 
+		 	cnv.height	//Altura da imagem a ser exibida 
 		);
+
+		
+		ctx.fillRect(zezim.posX)
+		circle.arc(zezim.posX,zezim.posY,50,0,2*Math.PI)
 		zezim.draw(ctx);
+		
 	}
 
 	function loop(){
