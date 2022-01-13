@@ -1,73 +1,28 @@
-const express = require("express")
+import express from "express";
+import http from 'http'
+import createGame from "./public/js/game.js";
+import fs from 'fs';
+import socketio from 'socket.io';
+
 const app = express()
-const session = require("express-session")
-const bodyParser = require("body-parser")
-const { Op } = require("sequelize");
-//databases
-const path = require('path')
-const PORT = process.env.PORT || 3000
+const server = http.createServer(app)
+const sockets = socketio(server)
 
-const PersonQuest = require("./DataBases/PersonQuest")
+app.use(express.static("public"))
 
-app.use(session({
-    secret: "sdfsdfsdfgdfgfgh",
-    cookie: { maxAge: 3600000 }
-}))
+const game = createGame()
+var spriteSheet = fs.readFileSync("./public/img/killer.png")
+var spriteSheet2 = fs.readFileSync("./public/img/img.png")
+game.addPlayer({id:"pou",img:spriteSheet})
+//game.addPlayer({id:"shet",img:spriteSheet2})
 
-//usar o EJS como view engine | renderizador de html
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
-//Carregamento de arquivos estaticos no express
-app.use(express.static(path.join(__dirname, 'public')))
-//Carregamento do bodyPerser
-app.use(bodyParser.urlencoded({ extended: false, limit: "50mb" }))
-app.use(bodyParser.json({ limit: '50mb' }))
-
-
-app.get("/", (req, res) => {
-    var erro = 0
-   res.render("personQuest",{erro:erro})
-})
-app.post("/personagem",async (req,res)=>{
-    var {nome,apelido,classe,descClass,cla,descCla,habEsp,descHab,fraqueza,descFraq,observacao} = req.body
-    console.log(req.body)
-    if (nome != undefined && nome != '' && apelido != undefined && apelido != '' &&  classe != undefined && classe != '' &&  cla != undefined && cla != '' &&  habEsp != undefined && habEsp != '' && fraqueza != undefined && fraqueza != '') {
-       var  igual = await PersonQuest.findOne({where:{[Op.or]:[{nome:nome},{apelido:apelido},{poder:habEsp}]}})
-       if (igual == undefined) {
-
-           PersonQuest.create({
-            nome:nome,
-            apelido:apelido,
-            classe:classe,
-            descricaoClasse:descClass,
-            cla:cla,
-            descricaoCla:descCla,
-            poder:habEsp,
-            descricaoPoder:descHab,
-            fraqueza:fraqueza,
-            descricaofraqueza:descFraq,
-            observacao:observacao
-           }).then(criado =>{
-               res.render("sucesso")
-           }).catch(erro =>{
-               res.render("personQuest",{erro:erro})
-           })
-       } else {
-           var erro= "Ja existe um personagem com esse (nome,apelido,habilidade especial)"
-            res.render("personQuest",{erro:erro})
-       }
-    } else {
-        var erro= "Campo obrigatorio está vazio"
-        res.render("personQuest",{erro:erro})
-    }
+sockets.on('connection',(socket)=>{
+    const playerId = socket.id
+    console.log(`console do socketId ${playerId}`)
+    console.log(game.state)
+    socket.emit(`setup`,game.state)
 })
 
-app.get("/cadastros",(req,res)=>{
-    PersonQuest.findAll().then(personagens =>{
-        res.json(personagens)
-    })
-})
-
-app.listen(PORT, async() => {
-    console.log("Servidor ligado")
+server.listen(3000,()=>{
+    console.log('> Server on')
 })

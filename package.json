@@ -1,4 +1,6 @@
 {
+  "type": "module",
+  "main": "index.js",
   "dependencies": {
     "body-parser": "^1.19.1",
     "ejs": "^3.1.6",
@@ -6,6 +8,7 @@
     "express-session": "^1.17.2",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.5.0"
+    "sequelize": "^6.5.0",
+    "socketio": "^1.0.0"
   }
 }
