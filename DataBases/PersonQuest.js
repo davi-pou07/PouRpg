@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize')
-const connection = require("./database")
+import Sequelize from 'sequelize'
+import connection from "./database.js"
 
 const PersonQuest = connection.define("personquest",{
     nome:{
@@ -52,6 +52,6 @@ const PersonQuest = connection.define("personquest",{
 // PersonQuest.sync({force:true}).then(()=>{
 //     console.log("Tabela PersonQuest criada");
 // }) 
-module.exports = PersonQuest
+export default PersonQuest
 
 

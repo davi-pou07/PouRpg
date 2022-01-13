@@ -1,5 +1,4 @@
 export default function createGame() {
-
     const state = {
         players: {},
         screen:{
@@ -85,9 +84,8 @@ export default function createGame() {
         movePlayer,
         state
     }
-}
 
-function Personagem(id,img, srcX, srcY, posX, posY, width, height, speed) {
+    function Personagem(id,img, srcX, srcY, posX, posY, width, height, speed) {
     this.mvLeft = this.mvUp = this.mvRight = this.mvDown = false;
     this.srcX = srcX
     this.id = id
@@ -152,3 +150,5 @@ function Personagem(id,img, srcX, srcY, posX, posY, width, height, speed) {
         }
     }
 }
+}
+

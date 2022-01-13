@@ -134,15 +134,14 @@
            const playerId = socket.id
            console.log("logado com ",playerId)
        })
-       socket.on('setup',(state)=>{
-           console.log("----------")
+       socket.on('state',(state)=>{
            console.log(state)
-           for (const playerId in state.players) {
-                const player = state.players[playerId]
-                game.addPlayer(player.id,player.img)
-            }
-           console.log("game.state---------")
-           console.log(game.state)
+           console.log(state.players['pou'])
+           const img = new Image()
+           img.src = state.players['pou'].img
+           var pou = state.players['pou']
+            pou.img = img
+           game.addPlayer(pou)
        })
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
