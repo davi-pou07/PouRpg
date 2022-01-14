@@ -1,4 +1,44 @@
 export default function createGame() {
+
+    class Personagem {
+        constructor(id, img, srcX, srcY, posX, posY, width, height, speed) {
+            this.mvLeft = this.mvUp = this.mvRight = this.mvDown = false;
+            this.srcX = srcX;
+            this.id = id;
+            this.srcY = srcY;
+            //Posição no canvas onde a figura será exibida
+            this.posX = posX;
+            this.posY = posY;
+            this.width = width; //32;
+            this.height = height; //48;
+            this.speed = speed; //1;
+            this.img = img;
+            this.countAnim = 0;
+        }
+    }
+    
+
+    function move(player,keyPressed) {
+        if (player.mvRight) {
+            //if player.posx += player.speed > screen.whidt
+            player.posX += player.speed;
+            player.srcY = player.height * 2;
+        } else
+            if (player.mvLeft) {
+                player.posX -= player.speed;
+                player.srcY = player.height * 1;
+            } else
+                if (player.mvUp) {
+                    player.posY -= player.speed;
+                    player.srcY = player.height * 3;
+                } else
+                    if (player.mvDown) {
+                        player.posY += player.speed;
+                        player.srcY = player.height * 0;
+                    }
+    }
+
+
     const state = {
         players: {},
         screen:{
@@ -6,49 +46,81 @@ export default function createGame() {
             height:600
         }
     }
+    function setState(newState) {
+        Object.assign(state,newState)
+    }
+    
+    async function addPlayer(command) {
+        if(command.posX == undefined){
+            command.posX = Math.floor(Math.random() * state.screen.width) 
+            command.posY = Math.floor(Math.random() * state.screen.height) 
+            console.log(command)
+        }
+        const player = await new Personagem(command.id,command.img,0,0,command.posX,command.posY,32,48,1)
+        state.players[player.id] = await player
 
-    function addPlayer(command) {
-        const player = new Personagem(command.id,command.img, 0, 0, 360, 360, 32, 48, 1)
-        state.players[player.id] = player
+        notifyAll({
+            type:'add-player',
+            id:player.id,
+            img:player.img,
+        })
     }
 
     function removePlayer(command) {
-        const playerId = command
+        console.log("command remove")
+        const playerId = command.playerId
         delete state.players[playerId]
+        notifyAll({
+            type:"remove-player",
+            playerId:playerId
+        })
+    }
+
+    var observers = []
+
+    function subscribe(observersFunction) {
+        observers.push(observersFunction)
+    }
+
+    function notifyAll(command) {
+        console.log(`Notificando ${observers.length} observers`)
+        for (const observerFunction of observers) {
+            observerFunction(command)
+        }
     }
 
 
-
     function movePlayer(command) {
-
+        console.log(command)
+        notifyAll(command)
         const acceptedMoves = {
             ArrowRight(player) {
                 player.mvRight = true;
                 player.mvLeft = false;
                 player.mvUp = false;
                 player.mvDown = false;
-                player.move()
+                move(player)
             },
             ArrowLeft(player) {
                 player.mvRight = false;
                 player.mvLeft = true;
                 player.mvUp = false;
                 player.mvDown = false;
-                player.move()
+                move(player)
             },
             ArrowUp(player) {
                 player.mvRight = false;
                 player.mvLeft = false;
                 player.mvUp = true;
                 player.mvDown = false;
-                player.move()
+                move(player)
             },
             ArrowDown(player) {
                 player.mvRight = false;
                 player.mvLeft = false;
                 player.mvUp = false;
                 player.mvDown = true;
-                player.move()
+                move(player)
             }
         }
 
@@ -59,7 +131,7 @@ export default function createGame() {
             moveFunction(player)
         }
 
-        var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
+        /*var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
         window.addEventListener("keyup", keyupHandler, false);
         function keyupHandler(e) {
             switch (e.keyCode) {
@@ -77,78 +149,17 @@ export default function createGame() {
                     break;
             }
         }
+        */
     }
     return {
         addPlayer,
         removePlayer,
         movePlayer,
+        setState,
+        subscribe,
+        Personagem,
         state
     }
 
-    function Personagem(id,img, srcX, srcY, posX, posY, width, height, speed) {
-    this.mvLeft = this.mvUp = this.mvRight = this.mvDown = false;
-    this.srcX = srcX
-    this.id = id
-    this.srcY = srcY;
-    //Posição no canvas onde a figura será exibida
-    this.posX = posX
-    this.posY = posY;
-    this.width = width//32;
-    this.height = height//48;
-    this.speed = speed//1;
-    this.img = img;
-    this.countAnim = 0;
-
-    this.draw = function (ctx) {
-        ctx.drawImage(this.img,	//Imagem de origem
-            //Captura da imagem
-            this.srcX,	//Origem da captura no eixo X
-            this.srcY,	//Origem da captura no eixo Y
-            this.width,	//Largura da imagem que será capturada
-            this.height,//Altura da imagem que será capturada
-            //Exibição da imagem
-            this.posX,	//Posição no eixo X onde a imagem será exibida 
-            this.posY,	//Posição no eixo Y onde a imagem será exibida 
-            this.width,	//Largura da imagem a ser exibida 
-            this.height	//Altura da imagem a ser exibida 
-        );
-        this.animation()
-    }
-
-    this.move = function (keyPressed) {
-        if (this.mvRight) {
-            //if this.posx += this.speed > screen.whidt
-            this.posX += this.speed;
-            this.srcY = this.height * 2;
-        } else
-            if (this.mvLeft) {
-                this.posX -= this.speed;
-                this.srcY = this.height * 1;
-            } else
-                if (this.mvUp) {
-                    this.posY -= this.speed;
-                    this.srcY = this.height * 3;
-                } else
-                    if (this.mvDown) {
-                        this.posY += this.speed;
-                        this.srcY = this.height * 0;
-                    }
-    }
-
-    this.animation = function () {
-        if (this.mvLeft || this.mvUp || this.mvRight || this.mvDown) {
-            //Caso qualquer seta seja pressionada, o contador de animação é incrementado
-            this.countAnim++;
-            if (this.countAnim >= 20) {
-                this.countAnim = 0;
-            }
-            this.srcX = Math.floor(this.countAnim / 5) * this.width;
-        } else {
-            //Caso nenhuma tecla seja pressionada, o contador de animação é zerado e a imagem do personagem parado é exibida
-            this.srcX = 0;
-            this.countAnim = 0;
-        }
-    }
-}
 }
 

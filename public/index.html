@@ -112,6 +112,7 @@
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -124,9 +125,10 @@
 
         const game = createGame()
         const keyboardListener = createKeyboardListener(document)
-        keyboardListener.subscribe(game.movePlayer)
+        
 
         const screen = document.querySelector("canvas");
+        
         renderScreen(screen,game,requestAnimationFrame)
 
        const socket = io()
@@ -134,14 +136,58 @@
            const playerId = socket.id
            console.log("logado com ",playerId)
        })
-       socket.on('state',(state)=>{
-           console.log(state)
-           console.log(state.players['pou'])
-           const img = new Image()
-           img.src = state.players['pou'].img
-           var pou = state.players['pou']
-            pou.img = img
-           game.addPlayer(pou)
+       async function imagens(state){
+        for(const id in state.players){
+                const player = state.players[id]
+                const img = new Image()
+                img.src = player.img
+                state.players[id].img = img
+        }
+        return true
+       }
+
+        socket.on('setup',(state)=>{
+            imagens(state).then(()=>{
+                game.setState(state)
+                keyboardListener.registerPlayerId(socket.id)
+                keyboardListener.subscribe(game.movePlayer)
+                keyboardListener.subscribe((command)=>{
+                    socket.emit("move-player",command)
+                })
+            })
+            
+           /*for(const id in state.players){
+                const player = state.players[id]
+                const img = new Image()
+                img.src = player.img
+                player.img = img
+                game.addPlayer({id:player.id,
+                    img:player.img,
+                    posX:player.posX,
+                    posY:player.posY})
+                keyboardListener.subscribe(game.movePlayer)
+            }
+            */
+            console.log(game.state)
+           //game.setState(state)
+       })
+
+       socket.on("move-player",(command)=>{
+           const playerId = socket.id
+           if(playerId !== command.playerId){
+               game.movePlayer(command)
+           }
+       })
+
+       socket.on('add-player',async(command)=>{
+           console.log(`Recebendo ${command.type}`)
+          await game.addPlayer(command)
+       })
+
+       socket.on('remove-player',(command)=>{
+           console.log(`Recebendo ${command.type}`)
+           console.log(command)
+           game.removePlayer(command)
        })
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"

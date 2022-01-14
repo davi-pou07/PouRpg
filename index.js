@@ -4,6 +4,9 @@ import createGame from "./public/js/game.js";
 import socketio from 'socket.io';
 import {Questionario} from './controller/Questionario.js'
 import bodyParser from "body-parser";
+import fs from 'fs';
+import Canvas from 'canvas'
+import { disconnect } from "process";
 
 const app = express()
 const server = http.createServer(app)
@@ -18,23 +21,34 @@ app.set('view engine', 'ejs')
 app.use("/",Questionario)
 const game = createGame()
 
-var spriteSheet = "./img/killer.png"
-var spriteSheet2 = "./img/img.png"
-//game.addPlayer({id:"pou",img:spriteSheet})
+var img = "./img/killer.png"
+
+game.subscribe((command)=>{
+    console.log(`Emitindo ${command.type}`)
+    sockets.emit(command.type,command)
+})
+
+//var spriteSheet2 = "./img/img.png"
+
 //game.addPlayer({id:"shet",img:spriteSheet2})
-var jogadores = [{id:"pou",img:spriteSheet},{id:"shet",img:spriteSheet2}]
-game.state.players[jogadores[0].id] = jogadores[0]
-game.state.players[jogadores[1].id] = jogadores[1]
 
 
-
-
-
-sockets.on('connection',(socket)=>{
+sockets.on('connection',async(socket)=>{
     const playerId = socket.id
-    console.log(`console do socketId ${playerId}`)
-    console.log(game.state)
-    socket.emit(`state`,game.state)
+    await game.addPlayer({id:playerId,img:img})
+
+    sockets.emit(`setup`,game.state)
+
+    socket.on("disconnect",()=>{
+        console.log("disconnect")
+        game.removePlayer({playerId:playerId})
+    })
+
+    socket.on("move-player",(command)=>{
+        command.playerId = playerId
+        command.type = 'move-player'
+        game.movePlayer(command)
+    })
 })
 
 server.listen(3000,()=>{
