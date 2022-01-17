@@ -4,9 +4,6 @@ import createGame from "./public/js/game.js";
 import socketio from 'socket.io';
 import {Questionario} from './controller/Questionario.js'
 import bodyParser from "body-parser";
-import fs from 'fs';
-import Canvas from 'canvas'
-import { disconnect } from "process";
 
 const app = express()
 const server = http.createServer(app)
