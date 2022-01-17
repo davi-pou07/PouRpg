@@ -19,6 +19,5 @@
     "sequelize": "^6.5.0",
     "socketio": "^1.0.0",
     "svg-png-converter": "^0.0.9"
-  
-    
+  }
 }
