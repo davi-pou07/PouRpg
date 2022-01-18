@@ -131,25 +131,6 @@ export default function createGame() {
             moveFunction(player)
         }
 
-        /*var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
-        window.addEventListener("keyup", keyupHandler, false);
-        function keyupHandler(e) {
-            switch (e.keyCode) {
-                case RIGHT:
-                    player.mvRight = false;
-                    break;
-                case LEFT:
-                    player.mvLeft = false;
-                    break;
-                case UP:
-                    player.mvUp = false;
-                    break;
-                case DOWN:
-                    player.mvDown = false;
-                    break;
-            }
-        }
-        */
     }
     return {
         addPlayer,

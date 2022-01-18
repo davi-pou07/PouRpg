@@ -33,6 +33,27 @@ export default function createKeyboardListener(document) {
         notifyAll(command)
 
     }
+/*
+    var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
+    window.addEventListener("keyup", keyupHandler, false);
+    function keyupHandler(e) {
+        switch (e.keyCode) {
+            case ArrowRight:
+                player.mvRight = false;
+                break;
+            case LEFT:
+                player.mvLeft = false;
+                break;
+            case ArrowUp:
+                player.mvUp = false;
+                break;
+            case ArrowDown:
+                player.mvDown = false;
+                break;
+        }
+    }
+*/
+
     return {
         subscribe,
         registerPlayerId
