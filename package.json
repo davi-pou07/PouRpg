@@ -15,6 +15,7 @@
     "fs": "^0.0.1-security",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
+    "prompt-sync": "^4.2.0",
     "sequelize": "^6.5.0",
     "socketio": "^1.0.0"
   }

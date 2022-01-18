@@ -93,18 +93,54 @@ var classe2 =  new Classe(2,"Mago",14,2,100)
 var cla = new Cla(1,"Bor",5,2)
 var cla2 = new Cla(2,"shy",9,3)
 
-var Pou = new Personagem(1,'pou',classe,cla,habEsp)
-var Pou2 = new Personagem(2,'poa',classe2,cla2,habEs2)
+var Pou = new Personagem(1,'Garen',classe,cla,habEsp)
+var Pou2 = new Personagem(2,'Lux',classe2,cla2,habEs2)
+
+import prompt from 'prompt-sync'
+const pro = prompt()
 
 
 
-while (Pou.getStatus() || Pou2.getStatus()) {
-    Pou.acao.ataqueBasico(Pou2,Pou.getDano())
-    Pou2.acao.ataqueBasico(Pou,Pou2.getDano())
+const game = {
+    players: [Pou,Pou2],
+    step: 1,
+    game:true
+}
+var x = 0
+while(game.game){
+    
+    var y = x+1
+    console.log("Iniciando step" + game.step)
+    var player = game.players[x]
+    var inimigo = game.players[y]
+    if (inimigo == undefined) {
+        y = x - 1
+        inimigo = game.players[y]
+    }
+    if (player != undefined) {
+        var distance = pro(`O que deseja fazer com ${inimigo.nome}? ${player.nome} `);
+        switch (distance) {
+            case 'a':
+                player.acao.ataqueBasico(inimigo,player.getDano())
+                x++
+                game.step++
 
-    Pou.acao.habEsp(Pou2,Pou.habilidade)
-    Pou2.acao.habEsp(Pou,Pou2.habilidade)
+                break;
+            case 'h':
+                player.acao.habEsp(inimigo,player.habilidade)
+                x++
+                game.step++
+                break;
+            case 'stop':
+            game.game = false
 
-    Pou.acao.contraAtaqueRapido(Pou2,Pou.getDano())
-    Pou2.acao.contraAtaqueRapido(Pou,Pou.getDano())
+            default:
+                x++
+                game.step++
+                break;
+        }
+
+    } else {
+        x = 0
+    }
 }
