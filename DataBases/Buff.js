@@ -22,14 +22,6 @@ const Buff = connection.define("buffs",{
         type:Sequelize.INTEGER,
         allowNull:false
     },
-    tempo:{
-        type:Sequelize.STRING,
-        allowNull:false
-    },
-    disponivel:{
-        type:Sequelize.BOOLEAN,
-        allowNull:false
-    },
     isLendaria:{
         type:Sequelize.BOOLEAN,
         allowNull:false

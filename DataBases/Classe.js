@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize'
 import connection from "./database.js"
+import Buff from "./Buff.js"
 
 const Classe = connection.define("classes",{
     nome:{
@@ -24,18 +25,6 @@ const Classe = connection.define("classes",{
         type:Sequelize.INTEGER,
         allowNull:false
     },
-    buff:{
-        type:Sequelize.BOOLEAN,
-        allowNull:false
-    },
-    typeBuff:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    buffSeting:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
     tempo:{
         type:Sequelize.STRING,
         allowNull:false
@@ -55,7 +44,10 @@ const Classe = connection.define("classes",{
 
 })
 
+Classe.belongsTo(Buff)
+
 // Classe.sync({force:true}).then(()=>{
 //     console.log("Tabela Classe criada");
 // }) 
+
 export default Classe

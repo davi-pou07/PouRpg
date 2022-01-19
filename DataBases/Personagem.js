@@ -1,5 +1,10 @@
 import Sequelize from 'sequelize'
 import connection from "./database.js"
+import Classe from "./Classe.js"
+import Cla from "./Cla.js"
+import Habilidade from "./Habilidade.js"
+import Fraqueza from "./Fraqueza.js"
+import Imagem from "./Imagem.js"
 
 const Personagem = connection.define("personagens",{
     nome:{
@@ -10,24 +15,8 @@ const Personagem = connection.define("personagens",{
         type:Sequelize.BOOLEAN,
         allowNull:false
     },
-    foto:{
-        type:Sequelize.STRING,
-        allowNull:false
-    },
     apelido:{
         type:Sequelize.STRING,
-        allowNull:false
-    },
-    classeId:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    claId:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    habEspecialId:{
-        type:Sequelize.INTEGER,
         allowNull:false
     },
     poder1Id:{
@@ -42,32 +31,21 @@ const Personagem = connection.define("personagens",{
         type:Sequelize.INTEGER,
         allowNull:false
     },
-    item1Id:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    item2Id:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    item3Id:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    fraquezaId:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
     descricao:{
         type:Sequelize.TEXT,
         allowNull:false
     }
 
 })
+Personagem.belongsTo(Classe)
+Personagem.belongsTo(Cla)
+Personagem.belongsTo(Habilidade)
+Personagem.belongsTo(Fraqueza)
+Personagem.belongsTo(Imagem)
 
-// Personagem.sync({force:true}).then(()=>{
-//     console.log("Tabela Personagem criada");
-// }) 
+Personagem.sync({force:true}).then(()=>{
+    console.log("Tabela Personagem criada");
+}) 
 export default Personagem
 
 

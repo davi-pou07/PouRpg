@@ -10,13 +10,9 @@ const Item = connection.define("items",{
         type:Sequelize.BOOLEAN,
         allowNull:false
     },
-    typeBuff:{
+    buffId:{
         type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    buffSeting:{
-        type:Sequelize.INTEGER,
-        allowNull:false
+        allowNull:true
     },
     tempo:{
         type:Sequelize.STRING,

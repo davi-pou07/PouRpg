@@ -1,21 +1,10 @@
 import Sequelize from 'sequelize'
 import connection from "./database.js"
+import Buff from "./Buff.js"
 
 const Fraqueza = connection.define("fraquezas",{
     nome:{
         type:Sequelize.STRING,
-        allowNull:false
-    },
-    buff:{
-        type:Sequelize.BOOLEAN,
-        allowNull:false
-    },
-    typeBuff:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    buffSeting:{
-        type:Sequelize.INTEGER,
         allowNull:false
     },
     tempo:{
@@ -33,6 +22,7 @@ const Fraqueza = connection.define("fraquezas",{
 
 })
 
+Fraqueza.belongsTo(Buff)
 // Fraqueza.sync({force:true}).then(()=>{
 //     console.log("Tabela Fraqueza criada");
 // }) 

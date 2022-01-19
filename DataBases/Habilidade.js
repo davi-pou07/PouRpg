@@ -18,13 +18,9 @@ const Habilidade = connection.define("habilidades",{
         type:Sequelize.BOOLEAN,
         allowNull:false
     },
-    typeBuff:{
+    buffId:{
         type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    buffSeting:{
-        type:Sequelize.INTEGER,
-        allowNull:false
+        allowNull:true
     },
     distancia:{
         type:Sequelize.STRING,

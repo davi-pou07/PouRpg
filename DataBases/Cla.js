@@ -1,5 +1,7 @@
 import Sequelize from 'sequelize'
 import connection from "./database.js"
+import Buff from "./Buff.js"
+
 
 const Cla = connection.define("clas",{
     nome:{
@@ -8,18 +10,6 @@ const Cla = connection.define("clas",{
     },
     descricao:{
         type:Sequelize.TEXT,
-        allowNull:false
-    },
-    buff:{
-        type:Sequelize.BOOLEAN,
-        allowNull:false
-    },
-    typeBuff:{
-        type:Sequelize.INTEGER,
-        allowNull:false
-    },
-    buffSeting:{
-        type:Sequelize.INTEGER,
         allowNull:false
     },
     tempo:{
@@ -36,6 +26,9 @@ const Cla = connection.define("clas",{
     }
 
 })
+
+Cla.belongsTo(Buff)
+
 
 // Cla.sync({force:true}).then(()=>{
 //     console.log("Tabela Cla criada");
