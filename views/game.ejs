@@ -1,0 +1,201 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Meu Primeiro Jogo Multiplayer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: black;
+        }
+
+        canvas {
+            border: 10px solid #CCC;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-8">
+                <canvas width="800" height="600"></canvas>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-center text-nowrap">PouRPG</h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="text-nowrap">Player</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th class="border-end text-center ">Id</th>
+                                                <th class="border-start text-center ">Nick</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center text-nowrap">Pou</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center text-nowrap">Pou</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center text-nowrap">Pou</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center text-nowrap">Pou</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="text-nowrap">Score</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center border-end text-nowrap">K</th>
+                                                <th class="text-center border-end text-nowrap">M</th>
+                                                <th class="text-center border-end text-nowrap">A</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                                <td class="text-center border-end text-nowrap">1</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module">
+        import createKeyboardListener from './js/keyBoardingListeng.js'
+        import createGame from './js/game.js'
+        import renderScreen from './js/render.js'
+
+        const game = createGame()
+        const keyboardListener = createKeyboardListener(document)
+        
+
+        const screen = document.querySelector("canvas");
+        
+        renderScreen(screen,game,requestAnimationFrame)
+
+       const socket = io()
+       socket.on("connect",()=>{
+           const playerId = socket.id
+           console.log("logado com ",playerId)
+       })
+       async function imagens(state){
+        for(const id in state.players){
+                const player = state.players[id]
+                const img = new Image()
+                img.src = player.img
+                state.players[id].img = img
+        }
+        return true
+       }
+
+        socket.on('setup',(state)=>{
+            imagens(state).then(()=>{
+                game.setState(state)
+                keyboardListener.registerPlayerId(socket.id)
+                keyboardListener.subscribe(game.movePlayer)
+                keyboardListener.subscribe((command)=>{
+                    socket.emit("move-player",command)
+                })
+            })
+            
+           /*for(const id in state.players){
+                const player = state.players[id]
+                const img = new Image()
+                img.src = player.img
+                player.img = img
+                game.addPlayer({id:player.id,
+                    img:player.img,
+                    posX:player.posX,
+                    posY:player.posY})
+                keyboardListener.subscribe(game.movePlayer)
+            }
+            */
+            console.log(game.state)
+           //game.setState(state)
+       })
+
+       socket.on("move-player",(command)=>{
+           const playerId = socket.id
+           if(playerId !== command.playerId){
+               game.movePlayer(command)
+           }
+       })
+
+       socket.on('add-player',async(command)=>{
+           console.log(`Recebendo ${command.type}`)
+          await game.addPlayer(command)
+       })
+
+       socket.on('remove-player',(command)=>{
+           console.log(`Recebendo ${command.type}`)
+           console.log(command)
+           game.removePlayer(command)
+       })
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

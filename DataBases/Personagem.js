@@ -43,9 +43,9 @@ Personagem.belongsTo(Habilidade)
 Personagem.belongsTo(Fraqueza)
 Personagem.belongsTo(Imagem)
 
-Personagem.sync({force:true}).then(()=>{
-    console.log("Tabela Personagem criada");
-}) 
+// Personagem.sync({force:true}).then(()=>{
+//     console.log("Tabela Personagem criada");
+// }) 
 export default Personagem
 
 

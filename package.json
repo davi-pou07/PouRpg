@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
+  "scripts": {
+    "start": "nodemon index"
+  },
   "engines": {
     "node": "12.x",
     "npm": "6.x"
@@ -13,6 +16,7 @@
     "express": "^4.17.2",
     "express-session": "^1.17.2",
     "fs": "^0.0.1-security",
+    "nodemon": "^2.0.15",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
     "prompt-sync": "^4.2.0",

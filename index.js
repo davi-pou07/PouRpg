@@ -11,6 +11,7 @@ import Habilidade from "./DataBases/Habilidade.js";
 import Item from "./DataBases/Item.js";
 import Imagem from "./DataBases/Imagem.js";
 import Personagem from "./DataBases/Personagem.js";
+import User from "./DataBases/User.js";
 
 
 import {Questionario} from './controller/Questionario.js'
@@ -27,9 +28,11 @@ app.use(express.static("public"))
 app.set('view engine', 'ejs')
 
 app.use("/",Questionario)
+
 const game = createGame()
 
 var img = "./img/killer.png"
+
 
 game.subscribe((command)=>{
     console.log(`Emitindo ${command.type}`)
@@ -40,6 +43,14 @@ game.subscribe((command)=>{
 
 //game.addPlayer({id:"shet",img:spriteSheet2})
 
+app.get("/",(req,res)=>{
+    var x = false
+    if (x == true) {
+        res.render("index")
+    } else {
+        res.redirect("/questionario")
+    }
+})
 
 sockets.on('connection',async(socket)=>{
     const playerId = socket.id
